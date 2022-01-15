@@ -15,7 +15,7 @@ function App() {
   const [dateQuery, setDateQuery] = useState(new Date(date + '-05:00'))
   const [loading, setLoading] = useState(true)
   const [imgLoading, setImgLoading] = useState(true)
-  const [openCalendar, setOpenCalendar] = useState(false)
+  const [imageLiked, setImageLiked] = useState(false)
 
   const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
 
@@ -24,6 +24,14 @@ function App() {
   }
   const handleSub = () => {
     setDateQuery(subDays(dateQuery, 1))
+
+  }
+  const handleLike=()=>{
+    setImageLiked(state=>!state)
+    const localStrg=JSON.parse(localStorage.getItem('likedImgs'))||{}
+    const imgDate=String(formatISO9075(dateQuery, { representation: 'date' }))
+    localStrg[imgDate]=imageLiked?false:true
+    localStorage.setItem('likedImgs',JSON.stringify({...localStrg}))
   }
 
   //POPOVER
@@ -63,6 +71,13 @@ function App() {
   }
     , [dateQuery])
 
+  useEffect(()=>{
+    let obj=JSON.parse(localStorage.getItem('likedImgs'))||{}
+    const imgDate=String(formatISO9075(dateQuery, { representation: 'date' }))
+    console.log(obj)
+    if(obj[imgDate])setImageLiked(true)
+    else setImageLiked(false)
+  },[dateQuery])
   return (
     <>
       <Header />
@@ -80,7 +95,7 @@ function App() {
 
 
           {/* ========================IMAGE CONTAINER======================== */}
-          <Grow in={!imgLoading}>
+          <Fade in={!imgLoading}>
             <Paper sx={{ display: 'flex', borderRadius: 4, overflow: 'hidden', aspectRatio: '16/9', width: '100%', bgcolor: 'primary.dark', position: 'relative' }}>
               {result.media_type === 'video' ?
                 <iframe
@@ -95,15 +110,15 @@ function App() {
                 />
                 :
                 !loading &&
-                <img src={result.hdurl} onLoad={() => setImgLoading(false)} className='image-fit-cover' />
+                <img src={result.url} onLoad={() => setImgLoading(false)} className='image-fit-cover' />
               }
               {/* ========================HEART BUTTON======================== */}
-              <Button variant='text' color='primary' sx={{ position: 'absolute', right: 1, bottom: 2, color: '#fafafa' }} >
-                <Typography variant='h4' component='span'><i className="far fa-heart"></i></Typography>
+              <Button variant='text' color='primary' onClick={handleLike} sx={{ position: 'absolute', right: 1, bottom: 2, color: '#fafafa' }} >
+                {imageLiked?'LIKED':<Typography variant='h4' component='span'><i className="far fa-heart"></i></Typography>}
               </Button>
               {/* ========================END HEART BUTTON======================== */}
             </Paper>
-          </Grow>
+          </Fade>
           {/* ========================END IMAGE CONTAINER======================== */}
 
 
