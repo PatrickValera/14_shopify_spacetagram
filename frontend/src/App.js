@@ -66,12 +66,13 @@ function App() {
   return (
     <>
       <Header />
+
       {result ?
         // MAIN STARTS HERE
-        <Container component='main' maxWidth='xl' sx={{ alignItems: 'center', minHeight: '100vh' }}>
+        <Container component='main' maxWidth='xl' sx={{ pt: { xs: 1, md: 2 }, alignItems: 'center', minHeight: '100vh' }}>
           {/* ========================TITLE AND HEADER======================== */}
           <Fade in={!loading}>
-            <Box display='block' sx={{ textAlign: 'center' }}>
+            <Box display='block' sx={{ py: { xs: 1, md: 2 }, textAlign: 'center' }}>
               <Typography variant='h2'>{result.title}</Typography>
             </Box>
           </Fade>
@@ -80,7 +81,7 @@ function App() {
 
           {/* ========================IMAGE CONTAINER======================== */}
           <Grow in={!imgLoading}>
-            <Paper sx={{ display: 'flex', borderRadius: 4, overflow: 'hidden', aspectRatio: '16/9', width: '100%', bgcolor: 'primary.dark' }}>
+            <Paper sx={{ display: 'flex', borderRadius: 4, overflow: 'hidden', aspectRatio: '16/9', width: '100%', bgcolor: 'primary.dark', position: 'relative' }}>
               {result.media_type === 'video' ?
                 <iframe
                   className='image-fit-cover'
@@ -96,43 +97,44 @@ function App() {
                 !loading &&
                 <img src={result.hdurl} onLoad={() => setImgLoading(false)} className='image-fit-cover' />
               }
+              {/* ========================HEART BUTTON======================== */}
+              <Button variant='text' color='primary' sx={{ position: 'absolute', right: 1, bottom: 2, color: '#fafafa' }} >
+                <Typography variant='h4' component='span'><i className="far fa-heart"></i></Typography>
+              </Button>
+              {/* ========================END HEART BUTTON======================== */}
             </Paper>
           </Grow>
           {/* ========================END IMAGE CONTAINER======================== */}
 
 
           {/* =====================================ACTION GROUP===================================== */}
-          <Paper sx={{ display: 'flex', p: 1, mb: 2, borderRadius: 2, justifyContent: 'space-between', flexWrap: 'wrap', bgcolor: 'primary.light' }}>
-            {/* ========================HEART BUTTON======================== */}
-            <Button variant='text' color='primary' sx={{ color: '#fafafa' }} >
-              <i className="far fa-heart"></i>
-            </Button>
-            {/* ========================END HEART BUTTON======================== */}
+          <Paper sx={{ display: 'flex', py: 1, mb: 2, borderRadius: 2, justifyContent: 'right', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
 
-            <Box>
+            {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
+            <Box display='flex'>
               {/* ========================PREV BUTTON======================== */}
               <Button
                 onClick={handleSub}
-                sx={{ color: '#fafafa' }}
               >
-                <i className="fas fa-arrow-circle-left"></i>
+                <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
+
               </Button>
               {/* ======================END PREV BUTTON====================== */}
 
               {/* ========================CALENDAR BUTTON======================== */}
-              <Button variant='contained' onClick={handleClick} endIcon={<i className="far fa-calendar-alt" />}>{format(dateQuery, "LLL-dd-yyyy")}</Button>
+              <Button variant='contained' onClick={handleClick} ><Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" /></Typography></Button>
               {/* ========================END CALENDAR BUTTON======================== */}
 
               {/* ========================NEXT BUTTON======================== */}
               <Button
                 disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
                 onClick={handleAdd}
-                sx={{ color: '#fafafa' }}
               >
-                <i className="fas fa-arrow-circle-right"></i>
+                <Typography variant='h4' component='span' sx={{ color: '#fafafa' }}><i className="fas fa-arrow-circle-right"></i></Typography>
               </Button>
               {/* ======================END NEXT BUTTON======================== */}
             </Box>
+            {/* =================== END PREV-NEXT-DATE BUTTON CONTAINER =================== */}
             {/* ======================CALENDAR====================== */}
             <Popover
               open={open}
@@ -180,9 +182,12 @@ function App() {
 
         </Container>
         // MAIN ENDS HERE 
-
         :
-        <Loading />}
+        // LOADING IF RESULT NOT READY
+        <Loading />
+        // END LOADING
+      }
+
       <Footer />
     </>
   )

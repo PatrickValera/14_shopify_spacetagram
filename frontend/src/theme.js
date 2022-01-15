@@ -1,6 +1,7 @@
 import { createTheme, responsiveFontSizes } from "@mui/material";
 
-let darkTheme = createTheme({
+let darkTheme = createTheme({})
+darkTheme = createTheme({
     palette: {
         type: 'dark',
         primary: {
@@ -13,29 +14,44 @@ let darkTheme = createTheme({
             paper: '#27292E',
             default: '#27292E',
         },
-        text:{
-            primary:"#fafafa",
-            secondary:"#ddd",
+        text: {
+            primary: "#fafafa",
+            secondary: "#ddd",
         }
     },
     typography: {
         body1: {
-            fontSize: '1rem',
+            fontSize: '.7rem',
+            [darkTheme.breakpoints.up('md')]: {
+                fontSize: '1rem',
+            },
         },
         body2: {
-            fontSize: '0.9rem',
+            fontSize: '0.6rem',
+            [darkTheme.breakpoints.up('md')]: {
+                fontSize: '.9rem',
+            },
         },
         h1: {
             fontSize: '4rem',
         },
         h2: {
-            fontSize: '3rem',
+            fontSize: '1rem',
+            [darkTheme.breakpoints.up('md')]: {
+                fontSize: '2rem',
+            },
         },
         h3: {
-            fontSize: '1.5rem',
+            fontSize: '.8rem',
+            [darkTheme.breakpoints.up('md')]: {
+                fontSize: '2rem',
+            },
         },
         h4: {
-            fontSize: '1.3rem',
+            fontSize: '1rem',
+            [darkTheme.breakpoints.up('md')]: {
+                fontSize: '1.3rem',
+            },
         },
         h5: {
             fontSize: '1.1rem',
@@ -89,6 +105,7 @@ let darkTheme = createTheme({
         },
     },
 })
-darkTheme=responsiveFontSizes(darkTheme)
+
+
 
 export { darkTheme }
