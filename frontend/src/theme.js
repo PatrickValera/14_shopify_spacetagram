@@ -21,18 +21,18 @@ darkTheme = createTheme({
     },
     typography: {
         body1: {
-            fontSize: '.4rem',
+            fontSize: '.55rem',
             [darkTheme.breakpoints.up('md')]: {
-                fontSize: '.5rem',
+                fontSize: '.6rem',
             },
             [darkTheme.breakpoints.up('sm')]: {
                 fontSize: '.9rem',
             },
         },
         body2: {
-            fontSize: '0.5rem',
+            fontSize: '0.6rem',
             [darkTheme.breakpoints.up('md')]: {
-                fontSize: '.9rem',
+                fontSize: '1rem',
             },
         },
         h1: {
@@ -48,19 +48,19 @@ darkTheme = createTheme({
             },
         },
         h3: {
-            fontSize: '.55rem',
+            fontSize: '1.2rem',
             [darkTheme.breakpoints.up('md')]: {
-                fontSize: '2rem',
+                fontSize: '2.1rem',
             },
         },
         h4: {
-            fontSize: '.65rem',
+            fontSize: '1.3rem',
             [darkTheme.breakpoints.up('md')]: {
-                fontSize: '1.2rem',
+                fontSize: '1.5rem',
             },
         },
         h5: {
-            fontSize: '1.1rem',
+            fontSize: '1.2rem',
         },
         h6: {
             fontSize: '1rem',

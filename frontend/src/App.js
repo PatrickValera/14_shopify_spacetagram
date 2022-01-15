@@ -60,7 +60,6 @@ function App() {
         setResult(data)
         setLoading(false)
       }).catch((e) => {
-        setLoading(false)
         // console.log(e)
       })
   }
@@ -85,176 +84,179 @@ function App() {
   }, [dateQuery])
   return (
     <>
-      <Header />  
+      <Header />
       {/* // MAIN STARTS HERE */}
-        <Container component='main' maxWidth='xl' sx={{ px:{xs:1,md:2},pt: { xs: 1, md: 2 }, alignItems: 'center', minHeight: '100vh', position: 'static' }}>
-      {result &&
-      <>
-          <BackDrop openInfo={openInfo} setOpenInfo={setOpenInfo} title={result.title} explanation={result.explanation} />
-          {/* ==========TITLE AND HEADER======================== */}
-          <Fade in={!loading}>
-            <Box display='block' sx={{ textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
-              <Typography variant={result.title.length > 30 ? 'h3' : 'h2'}>{result.title}</Typography>
-            </Box>
-          </Fade>
-          {/* ==========END TITLE AND HEADER======================== */}
+      <Container component='main' maxWidth='xl' sx={{ px: { xs: 1, md: 2 }, pt: { xs: '60px', sm: '50px', md: '40px' }, alignItems: 'center', minHeight: '100vh', position: 'static' }}>
+        {result &&
+          <>
+            <BackDrop openInfo={openInfo} setOpenInfo={setOpenInfo} title={result.title} explanation={result.explanation} />
+            {/* ==========TITLE AND HEADER======================== */}
+            <Fade in={!loading}>
+              <Box display='block' sx={{ textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
+                <Typography variant={result.title.length > 30 ? 'h3' : 'h2'}>{result.title}</Typography>
+              </Box>
+            </Fade>
+            {/* ==========END TITLE AND HEADER======================== */}
 
-          {/* ==========PLAYER CONTAINER==================================== */}
-          <Paper className={`player ${fullScreen && 'player-fullscreen'}`} sx={{ transitionDuration: '1s', borderRadius: 2, overflow: 'hidden', mb: 1, bgcolor: 'primary.dark', zIndex: '100000' }}>
-            {/* =============IMAGE CONTAINER======================== */}
-            <Fade in={!imgLoading}>
-              <Paper sx={{ display: 'flex', width: '100%', aspectRatio: '16/9', overflow: 'hidden', flexGrow: '1', borderRadius: '0', position: 'relative', bgcolor: 'primary.dark' }}>
-           
-         
-                {result.media_type === 'video' ?
-                  <iframe
-                    className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`}
-                    src={result.url}
-                    className='image-fit-contain'
-                    frameBorder="0"
-                    allowFullScreen
-                    title="Embedded youtube"
-                    loop
-                    onLoad={() => setImgLoading(false)}
-                  />
-                  :
-                  !loading &&
-                  <img src={result.hdurl} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
-                }
-                
-                {/* ===================HEART BUTTON======================== */}
-                <Button variant='text' color='primary' size='small' onClick={handleLike} sx={{ position: 'absolute', minWidth:'0', right: 3, bottom: 2, color: '#fafafa' }} >
-                <Typography variant='h4' component='span'>{imageLiked ? 'LIKED' : <i className="far fa-heart"></i>}</Typography>
-                </Button>
-                {/* ===================END HEART BUTTON======================== */}
+            {/* ==========PLAYER CONTAINER==================================== */}
+            <Paper className={`player ${fullScreen && 'player-fullscreen'}`} sx={{ transitionDuration: '1s', borderRadius: 2, overflow: 'hidden', mb: 1, bgcolor: 'primary.dark', zIndex: '100000' }}>
+              {/* =============IMAGE CONTAINER======================== */}
+              <Fade in={!imgLoading}>
+                <Paper sx={{ display: 'flex', width: '100%', aspectRatio: '16/9', overflow: 'hidden', flexGrow: '1', borderRadius: '0', position: 'relative', bgcolor: 'primary.dark' }}>
+
+                  {result.media_type === 'video' ?
+                    <iframe
+                      className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`}
+                      src={result.url}
+                      frameBorder="0"
+                      allowFullScreen
+                      title="Embedded youtube"
+                      loop
+                      onLoad={() => setImgLoading(false)}
+                    />
+                    :
+                    !loading &&
+                    <img src={result.hdurl} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
+                  }
+
+                  {/* ===================HEART BUTTON======================== */}
+                  <Button variant='text' color='primary' size='small' onClick={handleLike} sx={{ position: 'absolute', minWidth: '0', right: 3, bottom: 3, color: '#fafafa' }} >
+                    <Typography variant='h4' component='span'>{imageLiked ? 'LIKED' : <i className="far fa-heart"></i>}</Typography>
+                  </Button>
+                  {/* ===================END HEART BUTTON======================== */}
+
+                </Paper>
+              </Fade>
+              {/* =============END IMAGE CONTAINER======================== */}
+
+              {/* =============ACTION GROUP===================================== */}
+              <Paper sx={{ display: 'flex', py:1, pb:`${fullScreen?'15px':'10px'}`,  justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
+                {/* ===================EXPANDS BUTTON CONTAINER =================== */}
+                <Box display='flex'>
+                  <Button
+                    sx={{ minWidth: '35px' }}
+                  >
+                    <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFullScreen(state => !state)}><i className="fas fa-expand-alt" /></Typography>
+                  </Button>
+                  <Button
+                    sx={{ minWidth: '35px' }}
+                  >
+                    <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFitImage(state => !state)}><i className="fas fa-compress"></i></Typography>
+                  </Button>
+                  <Button
+                    sx={{ minWidth: '35px' }}
+                  >
+                    <Typography variant='h4' color='#fafafa' component='span' onClick={() => setOpenInfo(state => !state)}><i className="fas fa-align-center" /></Typography>
+                  </Button>
+
+                </Box>
+                {/* ===================END EXPANDS BUTTON CONTAINER =================== */}
+
+                {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
+                <Box display='flex' sx={{ alignItems: 'center' }}>
+                  {imgLoading && <Loading />}
+                  {/* ========================PREV BUTTON======================== */}
+                  <Button
+                    onClick={handleSub}
+                    sx={{ minWidth: '35px' }}
+                  >
+                    <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
+                  </Button>
+                  {/* ======================END PREV BUTTON====================== */}
+
+                  {/* ========================CALENDAR BUTTON======================== */}
+                  <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0', minWidth: { xs: '90px', md: '140px' } }}>
+                    <Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" />
+                    </Typography>
+                  </Button>
+
+                  <LocalizationProvider dateAdapter={AdapterDateFns}  >
+                    <MobileDatePicker
+                      minDate={new Date(1995, 5, 16)}
+                      maxDate={date}
+                      inputFormat="MM/dd/yy"
+                      value={dateQuery}
+                      onChange={(newValue) => {
+                        setDateQuery(newValue);
+                      }}
+                      renderInput={(params) => <TextField size='small' sx={{ display: { xs: 'block', sm: 'none' }, width: '65px', padding: '0 0 !important', margin: '0', maxHeight: '30px' }} {...params} >
+                      </TextField>}
+                    />
+                  </LocalizationProvider>
+                  {/* ========================END CALENDAR BUTTON======================== */}
+
+                  {/* ========================NEXT BUTTON======================== */}
+                  <Button
+                    disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
+                    onClick={handleAdd}
+                    sx={{ minWidth: '35px' }}
+                  >
+                    <Typography
+                      variant='h4'
+                      component='span'
+                      sx={{ mr:2, color: `${formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })?'grey':'#fafafa'}`} }>
+                      <i className="fas fa-arrow-circle-right" />
+                    </Typography>
+                  </Button>
+                  {/* ======================END NEXT BUTTON======================== */}
+                </Box>
+                {/* ===================END PREV-NEXT-DATE BUTTON CONTAINER =================== */}
+
+                {/* ===================CALENDAR====================== */}
+                <Popover
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose} in={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                >
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <StaticDatePicker
+                      minDate={new Date(1995, 5, 16)}
+                      maxDate={date}
+                      displayStaticWrapperAs="desktop"
+                      openTo="day"
+                      value={dateQuery}
+                      onChange={(newValue) => {
+                        setDateQuery(newValue);
+                      }}
+
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+
+                  </LocalizationProvider>
+                </Popover>
+                {/* ===================END CALENDAR==================== */}
 
               </Paper>
-            </Fade>
-            {/* =============END IMAGE CONTAINER======================== */}
+              {/* =============END ACTION GROUP=================================== */}
 
-            {/* =============ACTION GROUP===================================== */}
-            <Paper sx={{ display: 'flex', py: 0, justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
-              {/* ===================EXPANDS BUTTON CONTAINER =================== */}
-              <Box display='flex'>
-                <Button
-                  sx={{ minWidth: '35px' }}
-                >
-                  <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFullScreen(state => !state)}><i className="fas fa-expand-alt" /></Typography>
-                </Button>
-                <Button
-                  sx={{ minWidth: '35px' }}
-                >
-                  <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFitImage(state => !state)}><i className="fas fa-compress"></i></Typography>
-                </Button>
-                <Button
-                  sx={{ minWidth: '35px' }}
-                >
-                  <Typography variant='h4' color='#fafafa' component='span' onClick={() => setOpenInfo(state => !state)}><i className="fas fa-align-center" /></Typography>
-                </Button>
-
-              </Box>
-              {/* ===================END EXPANDS BUTTON CONTAINER =================== */}
-
-              {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-              <Box display='flex' sx={{alignItems:'center'}}>
-              {imgLoading&&<Loading/>}
-                {/* ========================PREV BUTTON======================== */}
-                <Button
-                  onClick={handleSub}
-                  sx={{ minWidth: '35px' }}
-                >
-                  <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
-                </Button>
-                {/* ======================END PREV BUTTON====================== */}
-
-                {/* ========================CALENDAR BUTTON======================== */}
-                <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0', minWidth: { xs: '80px', md: '140px' } }}>
-                  <Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" />
-                  </Typography>
-                </Button>
-
-                <LocalizationProvider dateAdapter={AdapterDateFns}  >
-                  <MobileDatePicker
-                    minDate={new Date(1995, 5, 16)}
-                    maxDate={date}
-                    inputFormat="MM/dd/yyyy"
-                    value={dateQuery}
-                    onChange={(newValue) => {
-                      setDateQuery(newValue);
-                    }}
-                    renderInput={(params) => <TextField size='small' sx={{ display: { xs: 'block', sm: 'none' }, width: '65px', padding: '0 0 !important', margin: '0', maxHeight: '30px' }} {...params} >
-                    </TextField>}
-                  />
-                </LocalizationProvider>
-                {/* ========================END CALENDAR BUTTON======================== */}
-
-                {/* ========================NEXT BUTTON======================== */}
-                <Button
-                  disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
-                  onClick={handleAdd}
-                  sx={{ minWidth: '35px' }}
-                >
-                  <Typography variant='h4' component='span' sx={{ color: '#fafafa' }}><i className="fas fa-arrow-circle-right"></i></Typography>
-                </Button>
-                {/* ======================END NEXT BUTTON======================== */}
-              </Box>
-              {/* ===================END PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-
-              {/* ===================CALENDAR====================== */}
-              <Popover
-                open={open}
-                anchorEl={anchorEl}
-                onClose={handleClose} in={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'right',
-                }}
-              >
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <StaticDatePicker
-                    minDate={new Date(1995, 5, 16)}
-                    maxDate={date}
-                    displayStaticWrapperAs="desktop"
-                    openTo="day"
-                    value={dateQuery}
-                    onChange={(newValue) => {
-                      setDateQuery(newValue);
-                    }}
-
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-
-                </LocalizationProvider>
-              </Popover>
-              {/* ===================END CALENDAR==================== */}
 
             </Paper>
-            {/* =============END ACTION GROUP=================================== */}
+            {/* ====================================END PLAYER CONTAINER==================================== */}
 
+            {/* =====================================BODY===================================== */}
+            <Fade in={!loading}>
+              <Box component='article' display='block' sx={{ color: 'white', textAlign: 'center', maxWidth: { xs: '90%', sm: '60%', md: '600px' }, margin: '0 auto', py: 1 }}>
+                <Typography variant='body1'>{result.explanation}</Typography>
+              </Box>
+            </Fade>
+            {/* =================================END BODY================================= */}
 
-          </Paper>
-          {/* ====================================END PLAYER CONTAINER==================================== */}
+          </>
 
-          {/* =====================================BODY===================================== */}
-          <Fade in={!loading}>
-            <Box component='article' display='block' sx={{ color: 'white', textAlign: 'center', maxWidth: {xs:'90%',sm:'60%',md:'600px'}, margin: '0 auto', py: 1 }}>
-              <Typography variant='body1'>{result.explanation}</Typography>
-            </Box>
-          </Fade>
-          {/* =================================END BODY================================= */}
-
-     </>
-    
-      }
-   </Container>
-        {/* // MAIN ENDS HERE  */}
+        }
+      </Container>
+      {/* // MAIN ENDS HERE  */}
       <Footer />
     </>
   )

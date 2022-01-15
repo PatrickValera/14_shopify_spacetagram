@@ -6,7 +6,7 @@ const Header = () => {
         <Box component='header' display={visible?'block':'none'} sx={{py:{xs:1,md:2},bgcolor:'primary.main',width:'100%'}}>
             <Container maxWidth='xl' sx={{display:'block'}}>
             
-                <Typography variant='h3'><i className="fas fa-moon"></i> Spacetagram</Typography>
+                <Typography variant='h2'><i className="fas fa-moon"></i> Spacetagram</Typography>
                 <Typography variant='body2' color='grey.400' sx={{ml:{xs:'1rem',md:'3rem'},fontSize:{xs:'.45rem',md:'.7rem'}}}> NASA's photo of the day</Typography>
 
             </Container>
