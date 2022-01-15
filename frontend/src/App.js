@@ -93,7 +93,7 @@ function App() {
             {/* ==========TITLE AND HEADER======================== */}
             <Fade in={!loading}>
               <Box display='block' sx={{ textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
-                <Typography variant={result.title.length > 30 ? 'h3' : 'h2'}>{result.title}</Typography>
+                <Typography variant={result.title.length > 30 ? 'h4' : 'h2'}>{result.title}</Typography>
               </Box>
             </Fade>
             {/* ==========END TITLE AND HEADER======================== */}
@@ -116,12 +116,12 @@ function App() {
                     />
                     :
                     !loading &&
-                    <img src={result.hdurl} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
+                    <img src={result.hdurl} onClick={() => setFullScreen(state => !state)} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
                   }
 
                   {/* ===================HEART BUTTON======================== */}
                   <Button variant='text' color='primary' size='small' onClick={handleLike} sx={{ position: 'absolute', minWidth: '0', right: 3, bottom: 3, color: '#fafafa' }} >
-                    <Typography variant='h4' component='span'>{imageLiked ? 'LIKED' : <i className="far fa-heart"></i>}</Typography>
+                    <Typography variant='h4' component='span'>{imageLiked ? <i className="fas fa-heart"/> : <i className="far fa-heart"></i>}</Typography>
                   </Button>
                   {/* ===================END HEART BUTTON======================== */}
 
@@ -132,9 +132,9 @@ function App() {
               {/* =============ACTION GROUP===================================== */}
               <Paper sx={{ display: 'flex', py:1, pb:`${fullScreen?'15px':'10px'}`,  justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
                 {/* ===================EXPANDS BUTTON CONTAINER =================== */}
-                <Box display='flex'>
+                <Box display='flex' sx={{gap:1}}>
                   <Button
-                    sx={{ minWidth: '35px' }}
+                    sx={{ minWidth: '35px',ml:1 }}
                   >
                     <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFullScreen(state => !state)}><i className="fas fa-expand-alt" /></Typography>
                   </Button>
@@ -144,7 +144,7 @@ function App() {
                     <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFitImage(state => !state)}><i className="fas fa-compress"></i></Typography>
                   </Button>
                   <Button
-                    sx={{ minWidth: '35px' }}
+                    sx={{ minWidth: '45px' }}
                   >
                     <Typography variant='h4' color='#fafafa' component='span' onClick={() => setOpenInfo(state => !state)}><i className="fas fa-align-center" /></Typography>
                   </Button>
@@ -158,14 +158,14 @@ function App() {
                   {/* ========================PREV BUTTON======================== */}
                   <Button
                     onClick={handleSub}
-                    sx={{ minWidth: '35px' }}
+                    sx={{ minWidth: '45px' }}
                   >
                     <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
                   </Button>
                   {/* ======================END PREV BUTTON====================== */}
 
                   {/* ========================CALENDAR BUTTON======================== */}
-                  <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0', minWidth: { xs: '90px', md: '140px' } }}>
+                  <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0',minWidth: { xs: '90px', md: '140px' } }}>
                     <Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" />
                     </Typography>
                   </Button>
