@@ -2,9 +2,10 @@ import React from 'react'
 import {Box,Container, Typography} from '@mui/material'
 const Footer = () => {
     return (
-        <Box component='footer' sx={{bgcolor:'primary.main'}}>
+        <Box component='footer' sx={{bgcolor:'primary.main', textAlign:'center',py:3}}>
             <Container maxWidth='lg' component='header'>
-                <Typography variant='body1'>Footer</Typography>
+                <Typography variant='body1'>Shopify FrontEnd Challenge</Typography>
+                <a href='https://github.com/PatrickValera' style={{color:'white'}}><Typography variant='body1'>Patrick Valera</Typography></a>
             </Container>
         </Box>
 
