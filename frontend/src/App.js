@@ -16,6 +16,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [imgLoading, setImgLoading] = useState(true)
   const [imageLiked, setImageLiked] = useState(false)
+  const [fullScreen, setFullScreen] = useState(false)
 
   const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
 
@@ -26,12 +27,12 @@ function App() {
     setDateQuery(subDays(dateQuery, 1))
 
   }
-  const handleLike=()=>{
-    setImageLiked(state=>!state)
-    const localStrg=JSON.parse(localStorage.getItem('likedImgs'))||{}
-    const imgDate=String(formatISO9075(dateQuery, { representation: 'date' }))
-    localStrg[imgDate]=imageLiked?false:true
-    localStorage.setItem('likedImgs',JSON.stringify({...localStrg}))
+  const handleLike = () => {
+    setImageLiked(state => !state)
+    const localStrg = JSON.parse(localStorage.getItem('likedImgs')) || {}
+    const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
+    localStrg[imgDate] = imageLiked ? false : true
+    localStorage.setItem('likedImgs', JSON.stringify({ ...localStrg }))
   }
 
   //POPOVER
@@ -71,121 +72,130 @@ function App() {
   }
     , [dateQuery])
 
-  useEffect(()=>{
-    let obj=JSON.parse(localStorage.getItem('likedImgs'))||{}
-    const imgDate=String(formatISO9075(dateQuery, { representation: 'date' }))
+  useEffect(() => {
+    let obj = JSON.parse(localStorage.getItem('likedImgs')) || {}
+    const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
     console.log(obj)
-    if(obj[imgDate])setImageLiked(true)
+    if (obj[imgDate]) setImageLiked(true)
     else setImageLiked(false)
-  },[dateQuery])
+  }, [dateQuery])
   return (
     <>
       <Header />
 
       {result ?
         // MAIN STARTS HERE
-        <Container component='main' maxWidth='xl' sx={{ pt: { xs: 1, md: 2 }, alignItems: 'center', minHeight: '100vh' }}>
-          {/* ========================TITLE AND HEADER======================== */}
+        <Container component='main' maxWidth='xl' sx={{ pt: { xs: 1, md: 2 }, alignItems: 'center', minHeight: '100vh', position: 'static' }}>
+          {/* ==========TITLE AND HEADER======================== */}
           <Fade in={!loading}>
-            <Box display='block' sx={{ py: { xs: 1, md: 2 }, textAlign: 'center' }}>
-              <Typography variant='h2'>{result.title}</Typography>
+            <Box display='block' sx={{ py: { xs: 1, mb: 2 }, textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
+              <Typography variant={result.title.length > 30 ? 'h3' : 'h2'}>{result.title}</Typography>
             </Box>
           </Fade>
-          {/* ========================END TITLE AND HEADER======================== */}
+          {/* ==========END TITLE AND HEADER======================== */}
 
+          {/* ==========PLAYER CONTAINER==================================== */}
+          <Paper className={fullScreen&&'player'} sx={{transitionDuration:'1s',borderRadius: 2, overflow: 'hidden', mb: 1}}>
+            {/* =============IMAGE CONTAINER======================== */}
+            <Fade in={!imgLoading}>
+              <Paper sx={{ display: 'flex', width:'100%',aspectRatio:'16/9',flexGrow:'1',borderRadius:'0',  position: 'relative',bgcolor: 'primary.dark' }}>
+                {result.media_type === 'video' ?
+                  <iframe
+                    className='image-fit-cover'
+                    src={result.url}
+                    className='image-fit-contain'
+                    frameBorder="0"
+                    allowFullScreen
+                    title="Embedded youtube"
+                    loop
+                    onLoad={() => setImgLoading(false)}
+                  />
+                  :
+                  !loading &&
+                  <img src={result.url} onLoad={() => setImgLoading(false)} className='image-fit-cover' />
+                }
+                {/* ===================HEART BUTTON======================== */}
+                <Button variant='text' color='primary' onClick={handleLike} sx={{ position: 'absolute', right: 1, bottom: 2, color: '#fafafa' }} >
+                  {imageLiked ? 'LIKED' : <Typography variant='h4' component='span'><i className="far fa-heart"></i></Typography>}
+                </Button>
+                {/* ===================END HEART BUTTON======================== */}
 
-          {/* ========================IMAGE CONTAINER======================== */}
-          <Fade in={!imgLoading}>
-            <Paper sx={{ display: 'flex', borderRadius: 4, overflow: 'hidden', aspectRatio: '16/9', width: '100%', bgcolor: 'primary.dark', position: 'relative' }}>
-              {result.media_type === 'video' ?
-                <iframe
-                  className='image-fit-cover'
-                  src={result.url}
-                  frameBorder="0"
-                  allowFullScreen
-                  title="Embedded youtube"
-                  loop
-                  control={false}
-                  onLoad={() => setImgLoading(false)}
-                />
-                :
-                !loading &&
-                <img src={result.url} onLoad={() => setImgLoading(false)} className='image-fit-cover' />
-              }
-              {/* ========================HEART BUTTON======================== */}
-              <Button variant='text' color='primary' onClick={handleLike} sx={{ position: 'absolute', right: 1, bottom: 2, color: '#fafafa' }} >
-                {imageLiked?'LIKED':<Typography variant='h4' component='span'><i className="far fa-heart"></i></Typography>}
+              </Paper>
+            </Fade>
+            {/* =============END IMAGE CONTAINER======================== */}
+
+            {/* =============ACTION GROUP===================================== */}
+            <Paper sx={{ display: 'flex', py: 0, justifyContent: 'space-between', bgcolor: 'red',borderRadius:'0',  flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
+              {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
+              <Button>
+                <Typography variant='h4' color='#fafafa' component='span' onClick={()=>setFullScreen(state=>!state)}><i className="fas fa-expand-alt" /></Typography>
               </Button>
-              {/* ========================END HEART BUTTON======================== */}
+              <Box display='flex'>
+                {/* ========================PREV BUTTON======================== */}
+                <Button
+                  onClick={handleSub}
+                  sx={{minWidth:'35px'}}
+                >
+                  <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
+
+                </Button>
+                {/* ======================END PREV BUTTON====================== */}
+
+                {/* ========================CALENDAR BUTTON======================== */}
+                <Button variant='contained' onClick={handleClick} sx={{ px: 1, py: '0', minWidth: { xs: '80px', md: '140px' } }}><Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" /></Typography></Button>
+                {/* ========================END CALENDAR BUTTON======================== */}
+
+                {/* ========================NEXT BUTTON======================== */}
+                <Button
+                  disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
+                  onClick={handleAdd}
+                  sx={{minWidth:'35px'}}
+                >
+                  <Typography variant='h4' component='span' sx={{ color: '#fafafa' }}><i className="fas fa-arrow-circle-right"></i></Typography>
+                </Button>
+                {/* ======================END NEXT BUTTON======================== */}
+              </Box>
+              {/* ===================END PREV-NEXT-DATE BUTTON CONTAINER =================== */}
+
+              {/* ===================CALENDAR====================== */}
+              <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose} in={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                transformOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+              >
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <StaticDatePicker
+                    minDate={new Date(1995, 5, 16)}
+                    maxDate={date}
+                    displayStaticWrapperAs="desktop"
+                    openTo="day"
+                    value={dateQuery}
+                    onChange={(newValue) => {
+                      setDateQuery(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </Popover>
+              {/* ===================END CALENDAR==================== */}
+
             </Paper>
-          </Fade>
-          {/* ========================END IMAGE CONTAINER======================== */}
+            {/* =============END ACTION GROUP=================================== */}
 
-
-          {/* =====================================ACTION GROUP===================================== */}
-          <Paper sx={{ display: 'flex', py: 1, mb: 2, borderRadius: 2, justifyContent: 'right', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
-
-            {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-            <Box display='flex'>
-              {/* ========================PREV BUTTON======================== */}
-              <Button
-                onClick={handleSub}
-              >
-                <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
-
-              </Button>
-              {/* ======================END PREV BUTTON====================== */}
-
-              {/* ========================CALENDAR BUTTON======================== */}
-              <Button variant='contained' onClick={handleClick} ><Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" /></Typography></Button>
-              {/* ========================END CALENDAR BUTTON======================== */}
-
-              {/* ========================NEXT BUTTON======================== */}
-              <Button
-                disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
-                onClick={handleAdd}
-              >
-                <Typography variant='h4' component='span' sx={{ color: '#fafafa' }}><i className="fas fa-arrow-circle-right"></i></Typography>
-              </Button>
-              {/* ======================END NEXT BUTTON======================== */}
-            </Box>
-            {/* =================== END PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-            {/* ======================CALENDAR====================== */}
-            <Popover
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose} in={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              transformOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-            >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <StaticDatePicker
-                  minDate={new Date(1995, 5, 16)}
-                  maxDate={date}
-                  displayStaticWrapperAs="desktop"
-                  openTo="day"
-                  value={dateQuery}
-                  onChange={(newValue) => {
-                    setDateQuery(newValue);
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </Popover>
-
-            {/* ===================END CALENDAR==================== */}
 
           </Paper>
-          {/* END ACTION GROUP */}
+          {/* ====================================END PLAYER CONTAINER==================================== */}
 
           {/* =====================================BODY===================================== */}
           <Fade in={!loading}>

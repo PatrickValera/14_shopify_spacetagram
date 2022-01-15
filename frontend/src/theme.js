@@ -21,13 +21,13 @@ darkTheme = createTheme({
     },
     typography: {
         body1: {
-            fontSize: '.7rem',
+            fontSize: '.6rem',
             [darkTheme.breakpoints.up('md')]: {
                 fontSize: '1rem',
             },
         },
         body2: {
-            fontSize: '0.6rem',
+            fontSize: '0.5rem',
             [darkTheme.breakpoints.up('md')]: {
                 fontSize: '.9rem',
             },
@@ -48,7 +48,7 @@ darkTheme = createTheme({
             },
         },
         h4: {
-            fontSize: '1rem',
+            fontSize: '.9rem',
             [darkTheme.breakpoints.up('md')]: {
                 fontSize: '1.3rem',
             },
