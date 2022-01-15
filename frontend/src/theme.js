@@ -48,15 +48,15 @@ darkTheme = createTheme({
             },
         },
         h3: {
-            fontSize: '.75rem',
+            fontSize: '.55rem',
             [darkTheme.breakpoints.up('md')]: {
                 fontSize: '2rem',
             },
         },
         h4: {
-            fontSize: '.9rem',
+            fontSize: '.65rem',
             [darkTheme.breakpoints.up('md')]: {
-                fontSize: '1.3rem',
+                fontSize: '1.2rem',
             },
         },
         h5: {

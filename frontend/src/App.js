@@ -60,6 +60,7 @@ function App() {
         setResult(data)
         setLoading(false)
       }).catch((e) => {
+        setLoading(false)
         // console.log(e)
       })
   }
@@ -84,10 +85,11 @@ function App() {
   }, [dateQuery])
   return (
     <>
-      <Header />
-      {result ?
-        // MAIN STARTS HERE
-        <Container component='main' maxWidth='xl' sx={{ pt: { xs: 1, md: 2 }, alignItems: 'center', minHeight: '100vh', position: 'static' }}>
+      <Header />  
+      {/* // MAIN STARTS HERE */}
+        <Container component='main' maxWidth='xl' sx={{ px:{xs:1,md:2},pt: { xs: 1, md: 2 }, alignItems: 'center', minHeight: '100vh', position: 'static' }}>
+      {result &&
+      <>
           <BackDrop openInfo={openInfo} setOpenInfo={setOpenInfo} title={result.title} explanation={result.explanation} />
           {/* ==========TITLE AND HEADER======================== */}
           <Fade in={!loading}>
@@ -102,6 +104,8 @@ function App() {
             {/* =============IMAGE CONTAINER======================== */}
             <Fade in={!imgLoading}>
               <Paper sx={{ display: 'flex', width: '100%', aspectRatio: '16/9', overflow: 'hidden', flexGrow: '1', borderRadius: '0', position: 'relative', bgcolor: 'primary.dark' }}>
+           
+         
                 {result.media_type === 'video' ?
                   <iframe
                     className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`}
@@ -115,11 +119,12 @@ function App() {
                   />
                   :
                   !loading &&
-                  <img src={result.url} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
+                  <img src={result.hdurl} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
                 }
+                
                 {/* ===================HEART BUTTON======================== */}
-                <Button variant='text' color='primary' onClick={handleLike} sx={{ position: 'absolute', right: 1, bottom: 2, color: '#fafafa' }} >
-                  {imageLiked ? 'LIKED' : <Typography variant='h4' component='span'><i className="far fa-heart"></i></Typography>}
+                <Button variant='text' color='primary' size='small' onClick={handleLike} sx={{ position: 'absolute', minWidth:'0', right: 3, bottom: 2, color: '#fafafa' }} >
+                <Typography variant='h4' component='span'>{imageLiked ? 'LIKED' : <i className="far fa-heart"></i>}</Typography>
                 </Button>
                 {/* ===================END HEART BUTTON======================== */}
 
@@ -151,7 +156,8 @@ function App() {
               {/* ===================END EXPANDS BUTTON CONTAINER =================== */}
 
               {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-              <Box display='flex'>
+              <Box display='flex' sx={{alignItems:'center'}}>
+              {imgLoading&&<Loading/>}
                 {/* ========================PREV BUTTON======================== */}
                 <Button
                   onClick={handleSub}
@@ -238,20 +244,17 @@ function App() {
 
           {/* =====================================BODY===================================== */}
           <Fade in={!loading}>
-            <Box component='article' display='block' sx={{ color: 'white', textAlign: 'center', maxWidth: '600px', margin: '0 auto', py: 1 }}>
+            <Box component='article' display='block' sx={{ color: 'white', textAlign: 'center', maxWidth: {xs:'90%',sm:'60%',md:'600px'}, margin: '0 auto', py: 1 }}>
               <Typography variant='body1'>{result.explanation}</Typography>
             </Box>
           </Fade>
           {/* =================================END BODY================================= */}
 
-        </Container>
-        // MAIN ENDS HERE 
-        :
-        // LOADING IF RESULT NOT READY
-        <Loading />
-        // END LOADING
+     </>
+    
       }
-
+   </Container>
+        {/* // MAIN ENDS HERE  */}
       <Footer />
     </>
   )
