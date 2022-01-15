@@ -1,0 +1,11 @@
+{
+  "name": "14_shopify_spacetagram",
+  "version": "1.0.0",
+  "description": "Fetch images from NASA's API and display image to client",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrick Valera",
+  "license": "ISC"
+}
