@@ -6,7 +6,7 @@ const Gallery = () => {
     // {"2022-01-15":{"date":"2022-01-15","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/PIA19048europa1024.jpg","type":"image"},"2022-01-14":{"date":"2022-01-14","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/NGC1566LRGBHa-Hanson-SelbyFinal1024.jpg","type":"image"},"2022-01-13":{"date":"2022-01-13","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/HOOClassicBinned_ps1024.jpg","type":"image"},"2022-01-10":{"date":"2022-01-10","liked":true,"url":"https://www.youtube.com/embed/RtDSxi-D4KA?rel=0","type":"video"},"2022-01-11":{"date":"2022-01-11","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/OrionStarFree3_Harbison_1080.jpg","type":"image"},"2022-01-08":{"date":"2022-01-08","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/QuadrantidsnorthernskyRadioTelescopeArray1024.jpg","type":"image"},"2022-01-05":{"date":"2022-01-05","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/SunriseYear_Vanzella_960.jpg","type":"image"},"2021-12-29":{"date":"2021-12-29","liked":true,"url":"https://apod.nasa.gov/apod/image/2112/JupiterStorms_JunoGill_1024.jpg","type":"image"}}
     const [images, setImages] = useState([])
     // console.log('IN UE')
-    let obj = JSON.parse(localStorage.getItem('likedImgs')) || {}
+    let obj = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
     let ar = images
     for (const property in obj) {
         console.log(property)

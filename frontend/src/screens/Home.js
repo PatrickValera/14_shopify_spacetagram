@@ -30,7 +30,7 @@ function Home() {
   }
   const handleLike = (imgUrl,type) => {
     setImageLiked(state => !state)
-    const localStrg = JSON.parse(localStorage.getItem('likedImgs')) || {}
+    const localStrg = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
     const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
     localStrg[imgDate] = {
         date:imgDate,
@@ -38,7 +38,7 @@ function Home() {
         url:imgUrl,
         type:type
     }
-    localStorage.setItem('likedImgs', JSON.stringify({ ...localStrg }))
+    localStorage.setItem('likedImagesSG', JSON.stringify({ ...localStrg }))
   }
 
   //POPOVER
@@ -79,7 +79,7 @@ function Home() {
     , [dateQuery])
 
   useEffect(() => {
-    let obj = JSON.parse(localStorage.getItem('likedImgs')) || {}
+    let obj = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
     const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
     // console.log(obj)
     if (obj[imgDate]) setImageLiked(true)
