@@ -93,7 +93,7 @@ function App() {
             {/* ==========TITLE AND HEADER======================== */}
             <Fade in={!loading}>
               <Box display='block' sx={{ textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
-                <Typography variant={result.title.length > 30 ? 'h4' : 'h2'}>{result.title}</Typography>
+                <Typography variant={result.title.length > 30 ? 'h5' : 'h2'}>{result.title}</Typography>
               </Box>
             </Fade>
             {/* ==========END TITLE AND HEADER======================== */}
@@ -116,12 +116,18 @@ function App() {
                     />
                     :
                     !loading &&
-                    <img src={result.hdurl} onClick={() => setFullScreen(state => !state)} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
+                    <img
+                      src={result.hdurl}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => {
+                        setFullScreen(state => !state)
+                        document.body.style.zoom = 1.0
+                      }} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
                   }
 
                   {/* ===================HEART BUTTON======================== */}
-                  <Button variant='text' color='primary' size='small' onClick={handleLike} sx={{ position: 'absolute', minWidth: '0', right: 3, bottom: 3, color: '#fafafa' }} >
-                    <Typography variant='h4' component='span'>{imageLiked ? <i className="fas fa-heart"/> : <i className="far fa-heart"></i>}</Typography>
+                  <Button variant='text' color='primary' size='small' onClick={handleLike} sx={{ position: 'absolute', minWidth: '0', right: '17px', bottom: '10px', color: '#fafafa' }} >
+                    <Typography variant='h4' component='span'>{imageLiked ? <i className="fas fa-heart" /> : <i className="far fa-heart"></i>}</Typography>
                   </Button>
                   {/* ===================END HEART BUTTON======================== */}
 
@@ -130,13 +136,16 @@ function App() {
               {/* =============END IMAGE CONTAINER======================== */}
 
               {/* =============ACTION GROUP===================================== */}
-              <Paper sx={{ display: 'flex', py:1, pb:`${fullScreen?'15px':'10px'}`,  justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
+              <Paper sx={{ display: 'flex', py: 1, pb: `${fullScreen ? '15px' : '10px'}`, justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
                 {/* ===================EXPANDS BUTTON CONTAINER =================== */}
-                <Box display='flex' sx={{gap:1}}>
+                <Box display='flex' sx={{ gap: 1 }}>
                   <Button
-                    sx={{ minWidth: '35px',ml:1 }}
+                    sx={{ minWidth: '35px', ml: 1 }}
                   >
-                    <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFullScreen(state => !state)}><i className="fas fa-expand-alt" /></Typography>
+                    <Typography variant='h4' color='#fafafa' component='span' onClick={() => {
+                      setFullScreen(state => !state)
+                      document.body.style.zoom = 1.0
+                    }}><i className="fas fa-expand-alt" /></Typography>
                   </Button>
                   <Button
                     sx={{ minWidth: '35px' }}
@@ -165,7 +174,7 @@ function App() {
                   {/* ======================END PREV BUTTON====================== */}
 
                   {/* ========================CALENDAR BUTTON======================== */}
-                  <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0',minWidth: { xs: '90px', md: '140px' } }}>
+                  <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0', minWidth: { xs: '90px', md: '140px' } }}>
                     <Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" />
                     </Typography>
                   </Button>
@@ -194,7 +203,7 @@ function App() {
                     <Typography
                       variant='h4'
                       component='span'
-                      sx={{ mr:2, color: `${formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })?'grey':'#fafafa'}`} }>
+                      sx={{ mr: 2, color: `${formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' }) ? 'grey' : '#fafafa'}` }}>
                       <i className="fas fa-arrow-circle-right" />
                     </Typography>
                   </Button>

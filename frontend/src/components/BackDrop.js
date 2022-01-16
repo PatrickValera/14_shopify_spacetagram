@@ -6,7 +6,7 @@ export const BackDrop = ({ openInfo, setOpenInfo, explanation, title }) => {
     return (
         <>
             <MuiBD
-                sx={{ color: '#fbfbfb', zIndex: '10000000',bgcolor:'rgba(0,0,0,.85)' }}
+                sx={{ color: '#fbfbfb', zIndex: '10000000',bgcolor:'rgba(0,0,0,.92)' }}
                 open={openInfo}
                 onClick={()=>setOpenInfo(false)}
             >
