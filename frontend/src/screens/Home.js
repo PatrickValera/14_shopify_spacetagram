@@ -18,6 +18,7 @@ function Home() {
     const [fitImage, setFitImage] = useState(true)
     const [fullScreen, setFullScreen] = useState(false)
     const [openInfo, setOpenInfo] = useState(false)
+    const [error, setError] = useState('')
 
     const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
 
@@ -65,12 +66,17 @@ function Home() {
     const [openMobileCal, setOpenMobileCal] = useState(false)
     //BACKDROP CALENDER
     const fetchData = async (abortCtrl) => {
+        setError('')
         await axios.get(URL + formatISO9075(dateQuery, { representation: 'date' }), { signal: abortCtrl.signal })
             .then(({ data }) => {
-                // console.log(data)
                 setResult(data)
                 setLoading(false)
             }).catch((e) => {
+                // setResult(null)
+                // setLoading(false)
+                if(!axios.isCancel(e))setError('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
+                
+                // console.log('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
                 // console.log(e)
             })
     }
@@ -100,7 +106,7 @@ function Home() {
                 {result &&
                     <>
                         <BackDrop openInfo={openInfo} setOpenInfo={setOpenInfo} title={result.title} explanation={result.explanation} />
-                        {/* ===================CALENDAR====================== */}
+                        {/* ===========CALENDAR============================= */}
                         <Popover
                             open={open}
                             anchorEl={anchorEl}
@@ -159,7 +165,7 @@ function Home() {
                                 </LocalizationProvider>
                             </Box>
                         </MuiBackdrop>
-                        {/* ===================END CALENDAR==================== */}
+                        {/* ===========END CALENDAR========================== */}
                         {/* ==========TITLE AND HEADER======================== */}
                         <Fade in={!loading}>
                             <Box display='block' sx={{ textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
@@ -196,7 +202,7 @@ function Home() {
                                     }
 
                                     {/* ===================HEART BUTTON======================== */}
-                                    <Button variant='text' color='primary' size='small' onClick={() => handleLike(result.url, result.media_type)} sx={{ position: 'absolute', minWidth: '0', right: '17px', bottom: '10px', color: '#fafafa' }} >
+                                    <Button variant='text' color='primary' size='small' onClick={() => handleLike(result.url, result.media_type)} sx={{ p: '7px', position: 'absolute', minWidth: '0', right: '17px', bottom: '10px', color: '#fafafa' }} >
                                         <Typography variant='h4' component='span'>{imageLiked ? <i className="fas fa-heart" /> : <i className="far fa-heart"></i>}</Typography>
                                     </Button>
                                     {/* ===================END HEART BUTTON======================== */}
@@ -206,30 +212,31 @@ function Home() {
                             {/* =============END IMAGE CONTAINER======================== */}
 
                             {/* =============ACTION GROUP===================================== */}
-                            <Paper sx={{ display: 'flex', py: 1, pb: `${fullScreen ? '15px' : '10px'}`, justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
+                            <Paper sx={{ display: 'flex', py: 1, pb: `${fullScreen ? '15px' : '10px'}`, position: 'relative', justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
                                 {/* ===================EXPANDS BUTTON CONTAINER =================== */}
                                 <Box display='flex' sx={{ gap: 1 }}>
                                     <Button
-                                        sx={{ minWidth: '35px', ml: 1 }}
+                                        sx={{ minWidth: '30px', px: 0, ml: 1 }}
+                                        onClick={() => { setFullScreen(state => !state) }}
                                     >
-                                        <Typography variant='h4' color='#fafafa' component='span' onClick={() => {
-                                            setFullScreen(state => !state)
-                                            document.body.style.zoom = 1.0
-                                        }}><i className="fas fa-expand-alt" /></Typography>
+                                        <Typography variant='h4' color='#fafafa' component='span' >{fullScreen?<i className="fas fa-compress-alt"></i>:<i className="fas fa-expand-alt" />}</Typography>
                                     </Button>
                                     <Button
-                                        sx={{ minWidth: '35px' }}
+                                        sx={{ minWidth: '30px', px: 0, }}
+                                        onClick={() => setFitImage(state => !state)}
                                     >
-                                        <Typography variant='h4' color='#fafafa' component='span' onClick={() => setFitImage(state => !state)}><i className="fas fa-compress"></i></Typography>
+                                        <Typography variant='h4' color='#fafafa' component='span' ><i className="fas fa-compress"></i></Typography>
                                     </Button>
                                     <Button
-                                        sx={{ minWidth: '45px' }}
+                                        sx={{ minWidth: '30px', px: 0, }}
+                                        onClick={() => setOpenInfo(state => !state)}
                                     >
-                                        <Typography variant='h4' color='#fafafa' component='span' onClick={() => setOpenInfo(state => !state)}><i className="fas fa-align-center" /></Typography>
+                                        <Typography variant='h4' color='#fafafa' component='span' ><i className="fas fa-align-center" /></Typography>
                                     </Button>
 
                                 </Box>
                                 {/* ===================END EXPANDS BUTTON CONTAINER =================== */}
+                                {error && <Typography variant='body2' color='#994444' sx={{ position: 'absolute', right: '10px', top: '-25px' }}>{error}</Typography>}
 
                                 {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
                                 <Box display='flex' sx={{ alignItems: 'center' }}>
@@ -237,20 +244,20 @@ function Home() {
                                     {/* ========================PREV BUTTON======================== */}
                                     <Button
                                         onClick={handleSub}
-                                        sx={{minWidth: {xs:'5px',md:'35px'}  }}
+                                        sx={{ minWidth: { xs: '5px', md: '35px' } }}
                                     >
                                         <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
                                     </Button>
                                     {/* ======================END PREV BUTTON====================== */}
 
                                     {/* ========================CALENDAR BUTTON======================== */}
-                                    <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: '0', minWidth: { xs: '90px', md: '140px' } }}>
+                                    <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: 1, minWidth: { xs: '90px', md: '140px' } }}>
                                         <Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" />
                                         </Typography>
                                     </Button>
                                     {/* MOBILE CALENDAR BUTTON */}
-                                    <Button variant='contained' onClick={() => setOpenMobileCal(true)} sx={{ display: { xs: 'flex', sm: 'none' }, mx: '5px', py: '0', minWidth: { xs: '75px', md: '140px' } }}>
-                                        <Typography variant='body2' sx={{ fontSize: '10px !important' }}>{format(dateQuery, "LLL-dd-yyyy")} <br/><i className="far fa-calendar-alt" />
+                                    <Button variant='contained' onClick={() => setOpenMobileCal(true)} sx={{ display: { xs: 'flex', sm: 'none' }, mx: '5px', py: '0', px: '7px', minWidth: { xs: '65px', md: '140px' } }}>
+                                        <Typography variant='body2' sx={{ fontSize: '10px !important' }}>{format(dateQuery, "LLL-dd-yy")} <br /><i className="far fa-calendar-alt" />
                                         </Typography>
                                     </Button>
                                     {/* <LocalizationProvider dateAdapter={AdapterDateFns}  >
@@ -272,7 +279,7 @@ function Home() {
                                     <Button
                                         disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
                                         onClick={handleAdd}
-                                        sx={{ minWidth: {xs:'5px',md:'35px'} }}
+                                        sx={{ minWidth: { xs: '5px', md: '35px' } }}
                                     >
                                         <Typography
                                             variant='h4'

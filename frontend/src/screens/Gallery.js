@@ -1,4 +1,5 @@
-import { Container, Fade, ImageList, ImageListItem, Typography } from '@mui/material'
+import { Box, Container, Fade, ImageList, ImageListItem, Skeleton, Typography } from '@mui/material'
+import { set } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 
 const Gallery = () => {
@@ -8,7 +9,7 @@ const Gallery = () => {
     const [images, setImages] = useState([])
     // console.log('IN UE')
     let obj = JSON.parse(localStorage.getItem('likedImagesSG')) || sample
-    let ar = images
+    let ar = []
     for (const property in obj) {
         console.log(property)
         ar.push(obj[property])
@@ -26,30 +27,24 @@ const Gallery = () => {
                 <Typography variant='body2'>
                     <i className="fas fa-heart" /> An image to add it to the gallery
                 </Typography>
-                <ImageList variant="masonry" cols={3} gap={8}>
+                <ImageList variant="masonry" cols={3} gap={4}>
                     {images && images.map((image) => {
                         return (
-                            <Fade in={true}>
+                            <Fade key={image.date} in={true}>
                                 <ImageListItem key={image.date} sx={{ position: 'relative' }}>
                                     {image.type === 'image' &&
-                                        <img
-                                            src={image.url}
-                                            // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                                            alt={image.date}
-                                            loading="lazy"
-                                            style={{ width: '248' }}
-                                        // onLoad={() => setImgLoaded({...imgLoaded,image:true})}
-                                        />
-                                        // :
-                                        // <iframe
-                                        //     style={{ width: '400' }}
-                                        //     src={image.url}
-                                        //     frameBorder="0"
-                                        //     title="Embedded youtube"
-                                        //     loop
-                                        // />
+                                        <Card url={image.url} date={image.date}/>
+                                        // <>
+                                        //     <img
+                                        //         src={image.url}
+                                        //         // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                                        //         alt={image.date}
+                                        //         loading="lazy"
+                                        //         style={{ width: '248' }}
+                                        //     />
+                                        //     <Typography color='grey.600' sx={{ textShadow: '2px 2px 5px #666', fontSize: { xs: '.47rem', md: '.8rem', position: 'absolute', bottom: '2px', left: '2px' } }}>{image.date}</Typography>
+                                        // </>
                                     }
-                                    <Typography color='grey.600' sx={{ textShadow: '2px 2px 5px #666', fontSize: { xs: '.47rem', md: '.8rem', position: 'absolute', bottom: '5px', left: '5px' } }}>{image.date}</Typography>
                                 </ImageListItem>
                             </Fade>
                         )
@@ -59,5 +54,37 @@ const Gallery = () => {
         </Fade>
     )
 }
+const Card = ({ url, date }) => {
+    const [imgLoaded, setImgLoaded] = useState(false)
+    const [error, setError] = useState(false)
+    useEffect(() => {
+        return (() => {
+            setImgLoaded(false)
+            setError(false)
+        })
+    }, [])
+    return (
+        <>
+            <img
+                src={url}
+                // srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                alt={date}
+                loading="lazy"
+                className='image-fit-cover'
+                style={{ opacity: `${imgLoaded && !error ? '1' : '0'}`,minHeight:`${imgLoaded?'0':'350px'}` }}
+                onLoad={() => {
+                    setImgLoaded(true)
+                    setError(false)
+                }}
+                onerror={() => {
+                    setError(true)
+                    setImgLoaded(true)
+                }}
 
+            />
+          {!imgLoaded&& <Skeleton variant="rectangular" width='100%' height='100%' sx={{position:'absolute',top:'0',left:'0'}} />} 
+          {imgLoaded&& <Typography color='grey.600' sx={{ textShadow: '2px 2px 5px #666', fontSize: { xs: '.47rem', md: '.8rem', position: 'absolute', bottom: '2px', left: '2px' } }}>{date}</Typography>} 
+        </>
+    )
+}
 export default Gallery
