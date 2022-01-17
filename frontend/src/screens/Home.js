@@ -58,12 +58,12 @@ function Home() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
     //POPOVER
     //BACKDROP CALENDER
-    const [openMobileCal, setOpenMobileCal] = useState(false)
+    console.log(typeof localStorage.getItem('openCalendarAtOpen'))
+    const [openMobileCal, setOpenMobileCal] = useState(localStorage.getItem('openCalendarAtOpen')==='false'?false:true)
     //BACKDROP CALENDER
     const fetchData = async (abortCtrl) => {
         setError('')
@@ -74,8 +74,8 @@ function Home() {
             }).catch((e) => {
                 // setResult(null)
                 // setLoading(false)
-                if(!axios.isCancel(e))setError('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
-                
+                if (!axios.isCancel(e)) setError('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
+
                 // console.log('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
                 // console.log(e)
             })
@@ -99,6 +99,9 @@ function Home() {
         if (obj[imgDate]) setImageLiked(true)
         else setImageLiked(false)
     }, [dateQuery])
+    useEffect(()=>{
+        localStorage.setItem('openCalendarAtOpen',false)
+    },[])
     return (
         <>
             {/* // MAIN STARTS HERE */}
@@ -156,6 +159,7 @@ function Home() {
                                         openTo="day"
                                         value={dateQuery}
                                         onChange={(newValue) => {
+                                            setOpenMobileCal(false)
                                             setDateQuery(newValue);
                                         }}
 
@@ -219,7 +223,7 @@ function Home() {
                                         sx={{ minWidth: '30px', px: 0, ml: 1 }}
                                         onClick={() => { setFullScreen(state => !state) }}
                                     >
-                                        <Typography variant='h4' color='#fafafa' component='span' >{fullScreen?<i className="fas fa-compress-alt"></i>:<i className="fas fa-expand-alt" />}</Typography>
+                                        <Typography variant='h4' color='#fafafa' component='span' >{fullScreen ? <i className="fas fa-compress-alt"></i> : <i className="fas fa-expand-alt" />}</Typography>
                                     </Button>
                                     <Button
                                         sx={{ minWidth: '30px', px: 0, }}
