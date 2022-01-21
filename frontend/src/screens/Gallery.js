@@ -1,9 +1,8 @@
-import { Box, Container, Fade, ImageList, ImageListItem, Skeleton, Typography } from '@mui/material'
-import { set } from 'date-fns'
+import { Container, Fade, ImageList, ImageListItem, Skeleton, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 
 const Gallery = () => {
-    const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
+    // const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
     // {"2022-01-15":{"date":"2022-01-15","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/PIA19048europa1024.jpg","type":"image"},"2022-01-14":{"date":"2022-01-14","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/NGC1566LRGBHa-Hanson-SelbyFinal1024.jpg","type":"image"},"2022-01-13":{"date":"2022-01-13","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/HOOClassicBinned_ps1024.jpg","type":"image"},"2022-01-10":{"date":"2022-01-10","liked":true,"url":"https://www.youtube.com/embed/RtDSxi-D4KA?rel=0","type":"video"},"2022-01-11":{"date":"2022-01-11","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/OrionStarFree3_Harbison_1080.jpg","type":"image"},"2022-01-08":{"date":"2022-01-08","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/QuadrantidsnorthernskyRadioTelescopeArray1024.jpg","type":"image"},"2022-01-05":{"date":"2022-01-05","liked":true,"url":"https://apod.nasa.gov/apod/image/2201/SunriseYear_Vanzella_960.jpg","type":"image"},"2021-12-29":{"date":"2021-12-29","liked":true,"url":"https://apod.nasa.gov/apod/image/2112/JupiterStorms_JunoGill_1024.jpg","type":"image"}}
     let sample = { "2022-01-14": { "date": "2022-01-14", "liked": true, "url": "https://apod.nasa.gov/apod/image/2201/NGC1566LRGBHa-Hanson-SelbyFinal1024.jpg", "type": "image" }, "2021-12-24": { "date": "2021-12-24", "liked": true, "url": "https://apod.nasa.gov/apod/image/2112/Sherick_M1_SHOLRGB_12-5-21a_1024.jpg", "type": "image" }, "2021-12-22": { "date": "2021-12-22", "liked": true, "url": "https://apod.nasa.gov/apod/image/2112/IxpeLaunch_Sirokie_960.jpg", "type": "image" }, "2021-12-14": { "date": "2021-12-14", "liked": true, "url": "https://apod.nasa.gov/apod/image/2112/HH666_HubbleOzsarac_960.jpg", "type": "image" }, "2021-12-11": { "date": "2021-12-11", "liked": true, "url": "https://apod.nasa.gov/apod/image/2112/eclipse_apod1024.jpg", "type": "image" }, "2013-11-28": { "date": "2013-11-28", "liked": true, "url": "https://apod.nasa.gov/apod/image/1311/NGC1999-Subaru-HST-S950.jpg", "type": "image" }, "2013-11-18": { "date": "2013-11-18", "liked": true, "url": "https://apod.nasa.gov/apod/image/1311/auroraiceland_vetter_960.jpg", "type": "image" } }
     const [images, setImages] = useState([])
@@ -17,7 +16,7 @@ const Gallery = () => {
     useEffect(() => {
         setImages(ar)
         return () => setImages([])
-    }, [])
+    }, [ar])
     return (
         <Fade in={images}>
             <Container maxWidth='xl' sx={{ minHeight: '100vh', textAlign: 'center' }}>

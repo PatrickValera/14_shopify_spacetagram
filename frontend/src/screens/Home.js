@@ -1,324 +1,234 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import {
+  Box,
+  Typography,
+  Fade,
+  Popover,
+  Backdrop as MuiBackdrop,
+} from '@mui/material'
+import { addDays, subDays, formatISO9075 } from 'date-fns'
+import { BackDrop } from '../components/BackDrop'
+import Calendar from '../components/Calendar'
+import PlayerHeader from '../components/PlayerHeader'
+import PlayerMedia from '../components/PlayerMedia'
+import PlayerControl from '../components/PlayerControl'
+import Player from '../components/Player'
+import Main from '../components/Main'
 
-import Loading from '../components/Loading'
-// import Main from './screens/Main'
-import { Button, Container, Box, Typography, Paper, TextField, Fade, Grow, Collapse, Popover, Backdrop as MuiBackdrop, OutlinedInput } from '@mui/material';
-import { format, addDays, subDays, formatISO9075 } from 'date-fns'
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { LocalizationProvider, StaticDatePicker, MobileDatePicker } from '@mui/lab/';
-import { BackDrop } from '../components/BackDrop';
 function Home() {
-    const date = new Date()
-    const [result, setResult] = useState(null)
-    const [dateQuery, setDateQuery] = useState(new Date('2022', '00', '15'))
-    const [loading, setLoading] = useState(true)
-    const [imgLoading, setImgLoading] = useState(true)
-    const [imageLiked, setImageLiked] = useState(false)
-    const [fitImage, setFitImage] = useState(true)
-    const [fullScreen, setFullScreen] = useState(false)
-    const [openInfo, setOpenInfo] = useState(false)
-    const [error, setError] = useState('')
+  const date = new Date()
+  const [result, setResult] = useState(null)
+  const [dateQuery, setDateQuery] = useState(new Date('2022', '00', '20'))
+  const [loading, setLoading] = useState(true)
+  const [imgLoading, setImgLoading] = useState(true)
+  const [imageLiked, setImageLiked] = useState(false)
+  const [fitImage, setFitImage] = useState(true)
+  const [fullScreen, setFullScreen] = useState(false)
+  const [openInfo, setOpenInfo] = useState(false)
+  const [error, setError] = useState('')
 
-    const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
+  const URL =
+    'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
 
-    const handleAdd = () => {
-        setDateQuery(addDays(dateQuery, 1))
-    }
-    const handleSub = () => {
-        setDateQuery(subDays(dateQuery, 1))
-
-    }
-    const handleLike = (imgUrl, type) => {
-        setImageLiked(state => !state)
-        const localStrg = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
-        const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
-        if (imageLiked) {
-            delete localStrg[imgDate]
-        }
-        else {
-            localStrg[imgDate] = {
-                date: imgDate,
-                liked: true,
-                url: imgUrl,
-                type: type
-            }
-        }
-
-        localStorage.setItem('likedImagesSG', JSON.stringify({ ...localStrg }))
+  const handleAdd = () => {
+    setDateQuery(addDays(dateQuery, 1))
+  }
+  const handleSub = () => {
+    setDateQuery(subDays(dateQuery, 1))
+  }
+  const handleLike = (imgUrl, type) => {
+    setImageLiked((state) => !state)
+    const localStrg = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
+    const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
+    if (imageLiked) {
+      delete localStrg[imgDate]
+    } else {
+      localStrg[imgDate] = {
+        date: imgDate,
+        liked: true,
+        url: imgUrl,
+        type: type,
+      }
     }
 
-    //POPOVER
-    const [anchorEl, setAnchorEl] = useState(null);
+    localStorage.setItem('likedImagesSG', JSON.stringify({ ...localStrg }))
+  }
 
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
+  //POPOVER CALENDAR FOR DESKTOP
+  const [anchorEl, setAnchorEl] = useState(null)
 
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const open = Boolean(anchorEl);
-    const id = open ? 'simple-popover' : undefined;
-    //POPOVER
-    //BACKDROP CALENDER
-    console.log(typeof localStorage.getItem('openCalendarAtOpen'))
-    const [openMobileCal, setOpenMobileCal] = useState(localStorage.getItem('openCalendarAtOpen')==='false'?false:true)
-    //BACKDROP CALENDER
-    const fetchData = async (abortCtrl) => {
-        setError('')
-        await axios.get(URL + formatISO9075(dateQuery, { representation: 'date' }), { signal: abortCtrl.signal })
-            .then(({ data }) => {
-                setResult(data)
-                setLoading(false)
-            }).catch((e) => {
-                // setResult(null)
-                // setLoading(false)
-                if (!axios.isCancel(e)) setError('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
+  const handleOpenCalendar = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
 
-                // console.log('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
-                // console.log(e)
-            })
-    }
+  const handleCloseCalendar = () => {
+    setAnchorEl(null)
+  }
+  const open = Boolean(anchorEl)
+  // const id = open ? 'simple-popover' : undefined
+  //POPOVER END
 
-    useEffect(() => {
-        // console.log(dateQuery)
-        setLoading(true)
-        setImgLoading(true)
-        const abortCtrl = new AbortController()
-        fetchData(abortCtrl)
+  //BACKDROP CALENDER FOR MOBILE
+  const [openMobileCal, setOpenMobileCal] = useState(
+    localStorage.getItem('openCalendarAtOpen') === 'false' ? false : true
+  )
+  //BACKDROP CALENDER
+  const fetchData = async (abortCtrl) => {
+    setError('')
+    await axios
+      .get(URL + formatISO9075(dateQuery, { representation: 'date' }), {
+        signal: abortCtrl.signal,
+      })
+      .then(({ data }) => {
+        setResult(data)
+        setLoading(false)
+      })
+      .catch((e) => {
+        if (!axios.isCancel(e))
+          setError(
+            'No data found for ' +
+              formatISO9075(dateQuery, { representation: 'date' })
+          )
 
-        return () => abortCtrl.abort()
-    }
-        , [dateQuery])
+        // console.log('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
+        // console.log(e)
+      })
+  }
 
-    useEffect(() => {
-        let obj = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
-        const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
-        // console.log(obj)
-        if (obj[imgDate]) setImageLiked(true)
-        else setImageLiked(false)
-    }, [dateQuery])
-    useEffect(()=>{
-        localStorage.setItem('openCalendarAtOpen',false)
-    },[])
-    return (
-        <>
-            {/* // MAIN STARTS HERE */}
-            <Container component='main' maxWidth='xl' sx={{ px: { xs: 1, md: 2 }, pt: { xs: '60px', sm: '50px', md: '40px' }, alignItems: 'center', minHeight: '100vh', position: 'static' }}>
-                {result &&
-                    <>
-                        <BackDrop openInfo={openInfo} setOpenInfo={setOpenInfo} title={result.title} explanation={result.explanation} />
-                        {/* ===========CALENDAR============================= */}
-                        <Popover
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose} in={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            transformOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'right',
-                            }}
-                        >
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <StaticDatePicker
-                                    minDate={new Date(1995, 5, 16)}
-                                    maxDate={date}
-                                    displayStaticWrapperAs="desktop"
-                                    openTo="day"
-                                    value={dateQuery}
-                                    onChange={(newValue) => {
-                                        setDateQuery(newValue);
-                                    }}
+  useEffect(() => {
+    // console.log(dateQuery)
+    const abortCtrl = new AbortController()
+    setLoading(true)
+    setImgLoading(true)
+    fetchData(abortCtrl)
 
-                                    renderInput={(params) => <TextField {...params} />}
-                                />
+    return () => abortCtrl.abort()
+  }, [dateQuery])
 
-                            </LocalizationProvider>
-                        </Popover>
-                        <MuiBackdrop
-                            sx={{ color: '#fbfbfb', zIndex: '10000000', bgcolor: 'rgba(0,0,0,.6)' }}
-                            open={openMobileCal}
-                            onClick={() => setOpenMobileCal(false)}
-                        >
-                            <Box onClick={(e) => {
-                                e.preventDefault()
-                                e.stopPropagation()
-                            }}>
-                                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                    <StaticDatePicker
-                                        minDate={new Date(1995, 5, 16)}
-                                        maxDate={date}
-                                        displayStaticWrapperAs="desktop"
-                                        openTo="day"
-                                        value={dateQuery}
-                                        onChange={(newValue) => {
-                                            setOpenMobileCal(false)
-                                            setDateQuery(newValue);
-                                        }}
+  useEffect(() => {
+    let obj = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
+    const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
+    if (obj[imgDate]) setImageLiked(true)
+    else setImageLiked(false)
+  }, [dateQuery])
 
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
+  useEffect(() => {
+    localStorage.setItem('openCalendarAtOpen', false)
+  }, [])
+  return (
+    <>
+      {/* // MAIN STARTS HERE */}
+      <Main>
+        {result && (
+          <>
+            {/* ===========CALENDARS============================= */}
+            <Popover
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleCloseCalendar}
+              in={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+            >
+              <Calendar
+                date={date}
+                setDateQuery={setDateQuery}
+                dateQuery={dateQuery}
+              />
+            </Popover>
+            <MuiBackdrop
+              sx={{
+                color: '#fbfbfb',
+                zIndex: '10000000',
+                bgcolor: 'rgba(0,0,0,.6)',
+              }}
+              open={openMobileCal}
+              onClick={() => setOpenMobileCal(false)}
+            >
+              <Box
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+              >
+                <Calendar
+                  date={date}
+                  setDateQuery={setDateQuery}
+                  dateQuery={dateQuery}
+                  setOpenMobileCal={setOpenMobileCal}
+                />
+              </Box>
+            </MuiBackdrop>
+            {/* ===========END CALENDAR========================== */}
+            {/* ===========PLAYER================================ */}
+            <PlayerHeader title={result.title} loading={loading} />
+            <Player fullScreen={fullScreen}>
+              <PlayerMedia
+                imgLoading={imgLoading}
+                result={result}
+                fitImage={fitImage}
+                setImgLoading={setImgLoading}
+                loading={loading}
+                imageLiked={imageLiked}
+                setFullScreen={setFullScreen}
+                handleLike={handleLike}
+              />
+              <PlayerControl
+                fullScreen={fullScreen}
+                setFullScreen={setFullScreen}
+                setFitImage={setFitImage}
+                setOpenInfo={setOpenInfo}
+                error={error}
+                imgLoading={imgLoading}
+                handleSub={handleSub}
+                handleAdd={handleAdd}
+                handleOpenCalendar={handleOpenCalendar}
+                setOpenMobileCal={setOpenMobileCal}
+                date={date}
+                dateQuery={dateQuery}
+              />
+            </Player>
+            {/* ===========END PLAYER =========================== */}
 
-                                </LocalizationProvider>
-                            </Box>
-                        </MuiBackdrop>
-                        {/* ===========END CALENDAR========================== */}
-                        {/* ==========TITLE AND HEADER======================== */}
-                        <Fade in={!loading}>
-                            <Box display='block' sx={{ textAlign: 'center', height: { xs: '30px', md: '50px' } }}>
-                                <Typography variant={result.title.length > 30 ? 'h5' : 'h2'}>{result.title}</Typography>
-                            </Box>
-                        </Fade>
-                        {/* ==========END TITLE AND HEADER======================== */}
-
-                        {/* ==========PLAYER CONTAINER==================================== */}
-                        <Paper className={`player ${fullScreen && 'player-fullscreen'}`} sx={{ transitionDuration: '1s', borderRadius: 2, overflow: 'hidden', mb: 1, bgcolor: 'primary.dark', zIndex: '100000' }}>
-                            {/* =============IMAGE CONTAINER======================== */}
-                            <Fade in={!imgLoading}>
-                                <Paper sx={{ display: 'flex', width: '100%', aspectRatio: '16/9', overflow: 'hidden', flexGrow: '1', borderRadius: '0', position: 'relative', bgcolor: 'primary.dark' }}>
-
-                                    {result.media_type === 'video' ?
-                                        <iframe
-                                            className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`}
-                                            src={result.url}
-                                            frameBorder="0"
-                                            allowFullScreen
-                                            title="Embedded youtube"
-                                            loop
-                                            onLoad={() => setImgLoading(false)}
-                                        />
-                                        :
-                                        !loading &&
-                                        <img
-                                            src={result.url}
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                setFullScreen(state => !state)
-                                                document.body.style.zoom = 1.0
-                                            }} onLoad={() => setImgLoading(false)} className={`${fitImage ? 'image-fit-contain' : 'image-fit-cover'}`} />
-                                    }
-
-                                    {/* ===================HEART BUTTON======================== */}
-                                    <Button variant='text' color='primary' size='small' onClick={() => handleLike(result.url, result.media_type)} sx={{ p: '7px', position: 'absolute', minWidth: '0', right: '17px', bottom: '10px', color: '#fafafa' }} >
-                                        <Typography variant='h4' component='span'>{imageLiked ? <i className="fas fa-heart" /> : <i className="far fa-heart"></i>}</Typography>
-                                    </Button>
-                                    {/* ===================END HEART BUTTON======================== */}
-
-                                </Paper>
-                            </Fade>
-                            {/* =============END IMAGE CONTAINER======================== */}
-
-                            {/* =============ACTION GROUP===================================== */}
-                            <Paper sx={{ display: 'flex', py: 1, pb: `${fullScreen ? '15px' : '10px'}`, position: 'relative', justifyContent: 'space-between', bgcolor: 'red', borderRadius: '0', flexWrap: 'noWrap', bgcolor: 'primary.light' }}>
-                                {/* ===================EXPANDS BUTTON CONTAINER =================== */}
-                                <Box display='flex' sx={{ gap: 1 }}>
-                                    <Button
-                                        sx={{ minWidth: '30px', px: 0, ml: 1 }}
-                                        onClick={() => { setFullScreen(state => !state) }}
-                                    >
-                                        <Typography variant='h4' color='#fafafa' component='span' >{fullScreen ? <i className="fas fa-compress-alt"></i> : <i className="fas fa-expand-alt" />}</Typography>
-                                    </Button>
-                                    <Button
-                                        sx={{ minWidth: '30px', px: 0, }}
-                                        onClick={() => setFitImage(state => !state)}
-                                    >
-                                        <Typography variant='h4' color='#fafafa' component='span' ><i className="fas fa-compress"></i></Typography>
-                                    </Button>
-                                    <Button
-                                        sx={{ minWidth: '30px', px: 0, }}
-                                        onClick={() => setOpenInfo(state => !state)}
-                                    >
-                                        <Typography variant='h4' color='#fafafa' component='span' ><i className="fas fa-align-center" /></Typography>
-                                    </Button>
-
-                                </Box>
-                                {/* ===================END EXPANDS BUTTON CONTAINER =================== */}
-                                {error && <Typography variant='body2' color='#994444' sx={{ position: 'absolute', right: '10px', top: '-25px' }}>{error}</Typography>}
-
-                                {/* ===================PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-                                <Box display='flex' sx={{ alignItems: 'center' }}>
-                                    {imgLoading && <Loading />}
-                                    {/* ========================PREV BUTTON======================== */}
-                                    <Button
-                                        onClick={handleSub}
-                                        sx={{ minWidth: { xs: '5px', md: '35px' } }}
-                                    >
-                                        <Typography variant='h4' color='#fafafa' component='span'><i className="fas fa-arrow-circle-left"></i></Typography>
-                                    </Button>
-                                    {/* ======================END PREV BUTTON====================== */}
-
-                                    {/* ========================CALENDAR BUTTON======================== */}
-                                    <Button variant='contained' onClick={handleClick} sx={{ display: { xs: 'none', sm: 'flex' }, px: 1, py: 1, minWidth: { xs: '90px', md: '140px' } }}>
-                                        <Typography variant='body1'>{format(dateQuery, "LLL-dd-yyyy")} <i className="far fa-calendar-alt" />
-                                        </Typography>
-                                    </Button>
-                                    {/* MOBILE CALENDAR BUTTON */}
-                                    <Button variant='contained' onClick={() => setOpenMobileCal(true)} sx={{ display: { xs: 'flex', sm: 'none' }, mx: '5px', py: '0', px: '7px', minWidth: { xs: '65px', md: '140px' } }}>
-                                        <Typography variant='body2' sx={{ fontSize: '10px !important' }}>{format(dateQuery, "LLL-dd-yy")} <br /><i className="far fa-calendar-alt" />
-                                        </Typography>
-                                    </Button>
-                                    {/* <LocalizationProvider dateAdapter={AdapterDateFns}  >
-                                        <MobileDatePicker
-                                            minDate={new Date(1995, 5, 16)}
-                                            maxDate={date}
-                                            inputFormat="MM/dd/yy"
-                                            value={dateQuery}
-                                            onChange={(newValue) => {
-                                                setDateQuery(newValue);
-                                            }}
-                                            renderInput={(params) => <TextField size='small' sx={{ display: { xs: 'block', sm: 'none' }, width: '65px', padding: '0 0 !important', margin: '0', maxHeight: '30px' }} {...params} >
-                                            </TextField>}
-                                        />
-                                    </LocalizationProvider> */}
-                                    {/* ========================END CALENDAR BUTTON======================== */}
-
-                                    {/* ========================NEXT BUTTON======================== */}
-                                    <Button
-                                        disabled={formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' })}
-                                        onClick={handleAdd}
-                                        sx={{ minWidth: { xs: '5px', md: '35px' } }}
-                                    >
-                                        <Typography
-                                            variant='h4'
-                                            component='span'
-                                            sx={{ mr: 2, color: `${formatISO9075(date, { representation: 'date' }) === formatISO9075(dateQuery, { representation: 'date' }) ? 'grey' : '#fafafa'}` }}>
-                                            <i className="fas fa-arrow-circle-right" />
-                                        </Typography>
-                                    </Button>
-                                    {/* ======================END NEXT BUTTON======================== */}
-                                </Box>
-                                {/* ===================END PREV-NEXT-DATE BUTTON CONTAINER =================== */}
-
-
-                            </Paper>
-                            {/* =============END ACTION GROUP=================================== */}
-
-
-                        </Paper>
-                        {/* ====================================END PLAYER CONTAINER==================================== */}
-
-                        {/* =====================================BODY===================================== */}
-                        <Fade in={!loading}>
-                            <Box component='article' display='block' sx={{ color: 'white', textAlign: 'center', maxWidth: { xs: '90%', sm: '60%', md: '600px' }, margin: '0 auto', py: 1 }}>
-                                <Typography variant='body1'>{result.explanation}</Typography>
-                            </Box>
-                        </Fade>
-                        {/* =================================END BODY================================= */}
-
-                    </>
-
-                }
-            </Container>
-            {/* // MAIN ENDS HERE  */}
-        </>
-    )
+            {/* ===========BODY================================== */}
+            <BackDrop
+              openInfo={openInfo}
+              setOpenInfo={setOpenInfo}
+              title={result.title}
+              explanation={result.explanation}
+            />
+            <Fade in={!loading}>
+              <Box
+                component='article'
+                display='block'
+                sx={{
+                  color: 'white',
+                  textAlign: 'center',
+                  maxWidth: { xs: '90%', sm: '60%', md: '600px' },
+                  margin: '0 auto',
+                  py: 1,
+                }}
+              >
+                <Typography variant='body1'>{result.explanation}</Typography>
+              </Box>
+            </Fade>
+            {/* ===========END BODY============================== */}
+          </>
+        )}
+      </Main>
+      {/* // MAIN ENDS HERE  */}
+    </>
+  )
 }
 
-export default Home;
+export default Home

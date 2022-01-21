@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes } from "@mui/material";
+import { createTheme } from "@mui/material";
 
 let darkTheme = createTheme({})
 darkTheme = createTheme({
@@ -117,7 +117,6 @@ darkTheme = createTheme({
         },
     },
 })
-
 
 
 export { darkTheme }
