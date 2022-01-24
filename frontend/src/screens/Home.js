@@ -19,7 +19,7 @@ import Main from '../components/Main'
 function Home() {
   const date = new Date()
   const [result, setResult] = useState(null)
-  const [dateQuery, setDateQuery] = useState(new Date('2022', '00', '20'))
+  const [dateQuery, setDateQuery] = useState(new Date('2022', '00', '24'))
   const [loading, setLoading] = useState(true)
   const [imgLoading, setImgLoading] = useState(true)
   const [imageLiked, setImageLiked] = useState(false)
@@ -28,8 +28,7 @@ function Home() {
   const [openInfo, setOpenInfo] = useState(false)
   const [error, setError] = useState('')
 
-  const URL =
-    'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
+  const URL = 'https://api.nasa.gov/planetary/apod?api_key=l7jgCPMiMB7154fyZifWUm5LpKGi4YDiDIt92cgr&date='
 
   const handleAdd = () => {
     setDateQuery(addDays(dateQuery, 1))
@@ -51,7 +50,6 @@ function Home() {
         type: type,
       }
     }
-
     localStorage.setItem('likedImagesSG', JSON.stringify({ ...localStrg }))
   }
 
@@ -88,25 +86,24 @@ function Home() {
         if (!axios.isCancel(e))
           setError(
             'No data found for ' +
-              formatISO9075(dateQuery, { representation: 'date' })
+            formatISO9075(dateQuery, { representation: 'date' })
           )
-
         // console.log('No data found for ' + formatISO9075(dateQuery, { representation: 'date' }))
-        // console.log(e)
       })
   }
 
   useEffect(() => {
+    //FETCH DATA AFTER DATE CHANGE
     // console.log(dateQuery)
     const abortCtrl = new AbortController()
     setLoading(true)
     setImgLoading(true)
     fetchData(abortCtrl)
-
     return () => abortCtrl.abort()
   }, [dateQuery])
 
   useEffect(() => {
+    //CHECK IF IMAGE WAS LIKED AFTER DATE CHANGE
     let obj = JSON.parse(localStorage.getItem('likedImagesSG')) || {}
     const imgDate = String(formatISO9075(dateQuery, { representation: 'date' }))
     if (obj[imgDate]) setImageLiked(true)
